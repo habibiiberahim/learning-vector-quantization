@@ -1,14 +1,14 @@
 @layout('layout.master')
 
 @yield('title')
-  Data Training
+    Experiment
 @endyield
 
 @yield('content')
 <div class="col-md-12">
   <div class="card " >
     <div class="card-header">
-      <h4 class="card-title"> Data Training</h4>
+      <h4 class="card-title"> Result</h4>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -19,19 +19,22 @@
             <th>Tarakib</th>
             <th>Qiro'ah</th>
             <th>Kitabah</th>
-            <th>Target</th>
-            {{--  <th>Status</th>  --}}
+            <th>Real</th>
+            <th>Prediction</th>
+            <th>Status</th>
           </thead>
           <tbody class="text-center">
-            @each(item in data)         
-              <tr>
-                <td>{{$loop.index+1}}</td>
-                <td>{{item.mufrodat}}</>
-                <td>{{item.tarakib}}</>
-                <td>{{item.qiroah}}</>
-                <td>{{item.kitabah}}</>
-                <td>{{"Kelas "+item.target}}</>  
-              </tr>
+            @each(item in data)
+                <tr>
+                    <td>{{$loop.index+1}}</td>
+                    <td>{{item.mufrodat}}</>
+                    <td>{{item.tarakib}}</>
+                    <td>{{item.qiroah}}</>
+                    <td>{{item.kitabah}}</>
+                    <td>{{"Kelas "+item.target}}</td>
+                    <td>{{"Kelas "+item.resultTarget}}</td>
+                    <td>{{item.status}}</td>  
+                </tr>
             @endeach
           </tbody>
         </table>
@@ -39,7 +42,5 @@
     </div>
   </div>
 </div>
-
-
 
 @endyield

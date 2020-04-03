@@ -17,5 +17,6 @@
 const Route = use('Route')
 
 
-Route.get('/', 'DatumController.index').as('Data.index')
-Route.get('/training', 'DatumController.training')
+Route.get('/', 'DatumController.index').as('data.index')
+Route.get('/training', 'DatumController.dataTraining').as('data.training')
+Route.get('/testing', 'DatumController.dataTesting').as('data.testing')

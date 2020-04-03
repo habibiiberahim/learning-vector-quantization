@@ -1,140 +1,128 @@
 'use strict'
-const datum = use('App/Models/Datum')
+const training = use('App/Models/Datum')
+const testing = use('App/Models/Testing')
+
 class DatumController {
   constructor(){
-    this.properti = 
-    {
-        user: {
+    
+        this.user = {
             mufrodat: 0,
             tarakib: 0,
             qiroah: 0,
             kitabah: 0,
+            target: '',
+        }
+        this.wA = {
+            mufrodat: 0.5,
+            tarakib: 0.5,
+            qiroah: 0.5,
+            kitabah: 0.5,
+          }
+          this.wB = {
+            mufrodat: 0.5,
+            tarakib: 0.5,
+            qiroah: 0.5,
+            kitabah: 0.5,
+          }
+          this.wC = {
+            mufrodat: 0.5,
+            tarakib: 0.5,
+            qiroah: 0.5,
+            kitabah: 0.5 ,
           },
-          wA: {
-            mufrodat: 30,
-            tarakib: 20,
-            qiroah: 14,
-            kitabah: 10,
-          },
-          wB: {
-            mufrodat: 24,
-            tarakib: 10,
-            qiroah: 22,
-            kitabah: 9,
-          },
-          wC: {
-            mufrodat: 22,
-            tarakib: 8,
-            qiroah: 18,
-            kitabah: 10,
-          },
-          lr: 0.01,
-          fixLr: 0, // akan di assign dengan nilai awal lr
-          wResult: {},
-          showTable: false,
-          loading: false,
-          isError: false,
-          message: '',
-          dataTested: [],
-          countTrue: 0,
-          accuration: 0
-    }
+          this.lr = 0.05
+          this.fixLr = 0 // akan di assign denTestinggan nilai awal lr
+          this.wResult = {}
+          this.showTable = false
+          this.loading = false
+          this.isError = false
+          this.message = ''
+          this.dataTested = []
+          this.countTrue = 0
+          this.accuration = 0
+    
   }
   
   async index({request, response, view}){
-    let data = await datum.all()
-    data = data.toJSON()
-    return view.render('training', {data: data})
+    await this.training()
+    await this.testing()
+    return view.render('home', {data: this.dataTested})
+  }
+
+  async dataTraining({request, response, view}){
+    let dataTraining = await training.all()
+    dataTraining = dataTraining.toJSON()
+    dataTraining = this.normalization(dataTraining)
+    return view.render('training', {data: dataTraining})
+  }
+
+  async dataTesting({request, response, view}){
+    let dataTesting = await testing.all()
+    dataTesting = dataTesting.toJSON()
+
+    dataTesting = this.normalization(dataTesting)
+    return view.render('testing', {data: dataTesting})
   }
 
   async training(){
       this.fixLr = this.lr
       const epoh = 1
       let a, b, c = null // a = kelas A, b = kelas B, c = Kelas C
-      let data = await datum.all()
+      let data = await training.all()
       data = data.toJSON()
-      
+      data = this.normalization(data)
       for (let i = 0; i < epoh; i++) {
           data.forEach(item => {
               
-              a = this.euclidean(this.properti.wA, item)
-              b = this.euclidean(this.properti.wB, item)
-              c = this.euclidean(this.properti.wC, item)
+              a = this.euclidean(this.wA, item)
+              b = this.euclidean(this.wB, item)
+              c = this.euclidean(this.wC, item)
 
               // seleksi kelas pemenang
               let minimum = Math.min(...[a, b, c])
 
               if (a === minimum) {
-                  this.match(this.properti.wA, item)
+                  this.match(this.wA, item)
                   // kurangi
-                  this.mismatch(this.properti.wB, item)
-                  this.mismatch(this.properti.wC, item)
+                  this.mismatch(this.wB, item)
+                  this.mismatch(this.wC, item)
               } else if (b === minimum) {
                   
-                  this.match(this.properti.wB, item)
+                  this.match(this.wB, item)
                   // kurangi
-                  this.mismatch(this.properti.wA, item)
-                  this.mismatch(this.properti.wC, item)
+                  this.mismatch(this.wA, item)
+                  this.mismatch(this.wC, item)
               } else {
                   
-                  this.match(this.properti.wC, item)
+                  this.match(this.wC, item)
                   // kurangi
-                  this.mismatch(this.properti.wA, item)
-                  this.mismatch(this.properti.wB, item)
+                  this.mismatch(this.wA, item)
+                  this.mismatch(this.wB, item)
               }
 
               //kurangi learning rate
-              this.properti.lr = 0.1 * this.properti.lr
+              this.lr = 0.1 * this.lr
           })  
       }
 
       //simpan bobot akhir
-      this.properti.wResult = {
-          a: a,
-          b: b,
-          c: c
-      }
-      this.testing()
-  }
-
-  async analyze(){
-      this.reset()
-
-      this.properti.user.mufrodat = 30
-      this.properti.user.tarakib = 10
-      this.properti.user.qiroah = 10
-      this.properti.user.kitabah = 10
-
-      let a, b, c = 0
-      a = this.euclidean(this.properti.wA, this.properti.user)
-      b = this.euclidean(this.properti.wB, this.properti.user)
-      c = this.euclidean(this.properti.wC, this.properti.user)
-
-      // seleksi kelas pemenang
-      let minimum = Math.min(...[a, b, c])
-      if (a === minimum) {
-        this.properti.user.target = 'A'
-      } else if (b === minimum) {
-        this.properti.user.target = 'B'
-      } else if (c === minimum) {
-        this.properti.user.target = 'C'
+      this.wResult = {
+          A: a,
+          B: b,
+          C: c
       }
 
-      this.loading = false
-      this.showTable = true
-
-
-      
-  }
+    }
 
   async testing(){
-      let data = await datum.all()
+      let data = await testing.all()
       data = data.toJSON()
+      data = this.normalization(data)
       data.forEach(item => {
           let a, b, c = 0
-          a = this.euclidean(this.properti.wA, item)
-          b = this.euclidean(this.properti.wB, item)
-          c = this.euclidean(this.properti.wC, item)
+          a = this.euclidean(this.wA, item)
+          b = this.euclidean(this.wB, item)
+          c = this.euclidean(this.wC, item)
   
           // seleksi kelas pemenang
           let minimum = Math.min(...[a, b, c])
@@ -146,46 +134,36 @@ class DatumController {
           } else if (c === minimum) {
             resultTarget = 'C'
           }
-          console.log(resultTarget)
-  
+
+          item.resultTarget = resultTarget
+          
           if (item.target === resultTarget) {
-            item.status = 'benar'
+            item.status = 'True'
             this.countTrue++;
           } else {
-            item.status = 'salah'
+            item.status = 'False'
           }
-          
-          this.properti.dataTested.push(item)
+          this.dataTested.push(item)
         })
-  
-        this.properti.accuration = Math.round((this.properti.countTrue / data.length) * 100)
-    
+
+        this.accuration = Math.round((this.countTrue / data.length) * 100)
+        console.log("Akurasi: "+this.accuration)
   }
 
   match(weight, item) {
-      weight.mufrodat = weight.mufrodat + (this.properti.lr * (item.mufrodat - weight.mufrodat))
-      weight.tarakib = weight.tarakib + (this.properti.lr * (item.tarakib - weight.tarakib))
-      weight.qiroah = weight.qiroah + (this.properti.lr * (item.qiroah - weight.qiroah))
-      weight.kitabah = weight.kitabah + (this.properti.lr * (item.kitabah - weight.kitabah))
+      weight.mufrodat = weight.mufrodat + (this.lr * (item.mufrodat - weight.mufrodat))
+      weight.tarakib = weight.tarakib + (this.lr * (item.tarakib - weight.tarakib))
+      weight.qiroah = weight.qiroah + (this.lr * (item.qiroah - weight.qiroah))
+      weight.kitabah = weight.kitabah + (this.lr * (item.kitabah - weight.kitabah))
   
-    
-      console.log(weight.mufrodat)
-      console.log(weight.tarakib)
-      console.log(weight.qiroah)
-      console.log(weight.kitabah)
   }
 
   mismatch(weight, item) {
-      weight.mufrodat = weight.mufrodat - (this.properti.lr * (item.mufrodat - weight.mufrodat))
-      weight.tarakib = weight.tarakib - (this.properti.lr * (item.tarakib - weight.tarakib))
-      weight.qiroah = weight.qiroah - (this.properti.lr * (item.qiroah - weight.qiroah))
-      weight.kitabah = weight.kitabah - (this.properti.lr * (item.kitabah - weight.kitabah))
+      weight.mufrodat = weight.mufrodat - (this.lr * (item.mufrodat - weight.mufrodat))
+      weight.tarakib = weight.tarakib - (this.lr * (item.tarakib - weight.tarakib))
+      weight.qiroah = weight.qiroah - (this.lr * (item.qiroah - weight.qiroah))
+      weight.kitabah = weight.kitabah - (this.lr * (item.kitabah - weight.kitabah))
 
-      
-      console.log(weight.mufrodat)
-      console.log(weight.tarakib)
-      console.log(weight.qiroah)
-      console.log(weight.kitabah)
   }
 
   euclidean (weight, item) {
@@ -210,8 +188,43 @@ class DatumController {
       this.loading = true
   }
 
-  normalization(){
-      
+  normalization(data){
+
+    let mufrodat = []
+    let tarakib = []
+    let qiroah = []
+    let kitabah = []
+
+    let temp = data
+
+    temp.forEach(element => {
+        mufrodat.push(element.mufrodat)
+        tarakib.push(element.tarakib)
+        qiroah.push(element.qiroah)
+        kitabah.push(element.kitabah)
+    });
+
+    let minMufrodat = Math.min.apply(null,mufrodat)
+    let maxMufrodat = Math.max.apply(null,mufrodat)
+    let minTarakib = Math.min.apply(null,tarakib)
+    let maxTarakib = Math.max.apply(null,tarakib)
+    let minQiroah = Math.min.apply(null,qiroah)
+    let maxQiroah = Math.max.apply(null,qiroah)
+    let minKitabah = Math.min.apply(null,kitabah)
+    let maxKitabah = Math.max.apply(null,kitabah)
+
+    
+
+    data.forEach(element => {
+     
+        element.mufrodat = ((element.mufrodat - minMufrodat)/(maxMufrodat - minMufrodat))
+        element.tarakib = ((element.tarakib - minTarakib) / (maxTarakib - minTarakib))
+        element.qiroah = ((element.qiroah - minQiroah) / (maxQiroah - minQiroah))
+        element.kitabah = ((element.kitabah - minKitabah) / (maxKitabah - minKitabah))
+    });
+    console.log(data)
+    
+    return data
   }
 
   reset() {
