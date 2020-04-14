@@ -1,46 +1,69 @@
 @layout('layout.master')
 
 @yield('title')
-    Experiment
+  Home
 @endyield
 
 @yield('content')
 <div class="col-md-12">
-  <div class="card " >
-    <div class="card-header">
-      <h4 class="card-title"> Result</h4>
+    <div class="card card-user">
+        <div class="card-header">
+            <h5 class="card-title">Learning Vector Quantization</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('data.classification')}}" >
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Ratio Data Training : Testing</label>
+                    <select class="form-control" name="ratio" id="">
+                        <option value="1">25 : 75 </option>
+                        <option value="2">50 : 50 </option>
+                        <option value="3">75 : 25 </option>
+                    </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Maximum Epoch</label>
+                    <input name="epoch" type="number" class="form-control" placeholder="0 - 10000" min="0" max="10000">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Learning Rate</label>
+                    <input name="alpha" type="number" class="form-control" placeholder="0 - 1" step="0.0001" min="0" max="10000">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Decrement Learning Rate</label>
+                    <input name="decAlpha" type="number" class="form-control" placeholder="0 - 1" step="0.0001" min="0" max="10000">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Episilon</label>
+                    <input name="episilon" type="number" class="form-control" placeholder="0 - 1" step="0.0001" min="0" max="10000">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="update ml-auto mr-auto">
+                    <button type="submit" class="btn btn-primary btn-round">Classification</button>
+                </div>
+            </div>
+            </form>
+        </div>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table">
-          <thead class=" text-primary text-center">
-            <th>No.</th>
-            <th>Mufrodat</th>
-            <th>Tarakib</th>
-            <th>Qiro'ah</th>
-            <th>Kitabah</th>
-            <th>Real</th>
-            <th>Prediction</th>
-            <th>Status</th>
-          </thead>
-          <tbody class="text-center">
-            @each(item in data)
-                <tr>
-                    <td>{{$loop.index+1}}</td>
-                    <td>{{item.mufrodat}}</>
-                    <td>{{item.tarakib}}</>
-                    <td>{{item.qiroah}}</>
-                    <td>{{item.kitabah}}</>
-                    <td>{{"Kelas "+item.target}}</td>
-                    <td>{{"Kelas "+item.resultTarget}}</td>
-                    <td>{{item.status}}</td>  
-                </tr>
-            @endeach
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </div>
-
 @endyield

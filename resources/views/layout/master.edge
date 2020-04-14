@@ -16,7 +16,6 @@
     <!-- CSS Files -->
     <link href="{{assetsUrl('assets/css/bootstrap.min.css')}}" rel="stylesheet" />
     <link href="{{assetsUrl('assets/css/paper-dashboard.css?v=2.0.1')}}" rel="stylesheet" />
-</head>
 
 <body class="">
   <div class="wrapper ">
@@ -36,19 +35,19 @@
         <ul class="nav">
           <li class=" ">
             <a href="{{ route('data.index') }}">
-              <i class="nc-icon nc-bank"></i>
-              <p>Experiment</p>
+              <i class="nc-icon nc-chart-pie-36"></i>
+              <p>Classification</p>
             </a>
           </li>
           <li>
             <a href="{{ route('data.training') }}">
-              <i class="nc-icon nc-diamond"></i>
+              <i class="nc-icon nc-bullet-list-67"></i>
               <p>Data Training</p>
             </a>
           </li>
           <li>
             <a href="{{ route('data.testing') }}">
-              <i class="nc-icon nc-pin-3"></i>
+              <i class="nc-icon nc-bullet-list-67"></i>
               <p>Data Testing</p>
             </a>
           </li>
@@ -62,12 +61,11 @@
     </div>
   </div>
   <!--   Core JS Files   -->
-    <script src="{{ assetsUrl('assets/js/core/jquery.min.js')}}></script>
-    <script src="{{ assetsUrl('assets/js/core/popper.min.js')}}></script>
-    <script src="{{ assetsUrl('assets/js/core/bootstrap.min.js')}}></script>
-    <script src="{{ assetsUrl('assets/js/plugins/perfect-scrollbar.jquery.min.js')}}></script>
-    <!--  Google Maps Plugin    -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+    <script src="{{ assetsUrl('assets/js/core/jquery.min.js')}}"></script>
+    
+    <script src="{{ assetsUrl('assets/js/core/popper.min.js')}}"></script>
+    <script src="{{ assetsUrl('assets/js/core/bootstrap.min.js')}}"></script>
+    <script src="{{ assetsUrl('assets/js/plugins/perfect-scrollbar.jquery.min.js')}}"></script>
     <!-- Chart JS -->
     <script src="{{ assetsUrl('assets/js/plugins/chartjs.min.js') }}"></script>
     <!--  Notifications Plugin    -->
