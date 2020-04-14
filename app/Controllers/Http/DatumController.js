@@ -104,13 +104,16 @@ class DatumController {
       let data = await training.all()
       data = data.toJSON()
       data = this.normalization(data)
-      console.log('epoch', this.epoch)
+      // console.log('epoch', this.epoch)
+      // console.log('Alpha', this.lr)
+      // console.log('decAlpha',this.decLr)
+      // console.log('eps', this.episilon)
+      for (let i = 0; i < epoh && this.lr >= this.episilon ; i++) {
+         // console.log('epoch', this.epoch)
       console.log('Alpha', this.lr)
-      console.log('decAlpha',this.decLr)
-      console.log('eps', this.episilon)
-      for (let i = 0; i < epoh; i++) {
-          data.forEach(item => {
-              
+        // console.log('decAlpha',this.decLr)
+      console.log('eps', this.episilon)  
+        data.forEach(item => {      
               a = this.euclidean(this.wA, item)
               b = this.euclidean(this.wB, item)
               c = this.euclidean(this.wC, item)
