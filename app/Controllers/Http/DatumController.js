@@ -5,8 +5,7 @@ const testing       = use('App/Models/Testing')
 const Database      = use("Database");
 
 class DatumController {
-  constructor(){
-    
+  constructor(){    
         this.user = {
          
         }
@@ -43,10 +42,29 @@ class DatumController {
           this.countAll = 0 
           this.accuration = 0
           this.epoch = 0
-    
+
+          this.minMufrodat = 0
+          this.maxMufrodat = 0
+          this.minTarakib = 0
+          this.maxTarakib = 0
+          this.minQiroah = 0
+          this.maxQiroah = 0
+          this.minKitabah = 0
+          this.maxKitabah = 0
+
+          this.Paa = 0
+          this.Pab = 0
+          this.Pac = 0
+          this.Pba = 0
+          this.Pbb = 0
+          this.Pbc = 0
+          this.Pca = 0
+          this.Pcb = 0
+          this.Pcc = 0
   }
 
-  async importData(key){
+  async importData({request, response}){
+    const key = request.input('ratio')
     await Database.truncate("data");
     await Database.truncate("testings");
     if(key == 1){
@@ -59,20 +77,22 @@ class DatumController {
       await ImportService.ImportDataTraining(75)
       await ImportService.ImportDataTesting(25)
      }
+     await response.redirect('/dataset')
   }
   
-  async index({request, response, view}){
+  async index({view}){
     return view.render('home')
   }
 
-  async classification({request, response, view}){
+  async classification({request, view}){
     this.epoch = request.input('epoch')
     this.lr = request.input('alpha')
     this.decLr = request.input('decAlpha')
     this.episilon =  request.input('episilon')
-    await this.importData(request.input('ratio'))
+   
     await this.training()
     await this.testing()
+    
     return view.render('result', {
       data: this.dataTested,
       accuration: this.accuration,
@@ -82,20 +102,16 @@ class DatumController {
     })
   }
 
-  async dataTraining({request, response, view}){
+  async dataset ({view}){
     let dataTraining = await training.all()
-    dataTraining = dataTraining.toJSON()
-    dataTraining = this.normalization(dataTraining)
-    return view.render('training', {data: dataTraining})
-  }
-
-  async dataTesting({request, response, view}){
     let dataTesting = await testing.all()
+
+    dataTraining = dataTraining.toJSON()
     dataTesting = dataTesting.toJSON()
 
-    dataTesting = this.normalization(dataTesting)
-    return view.render('testing', {data: dataTesting})
+    return view.render('dataset',{dataTraining: dataTraining, dataTesting: dataTesting})
   }
+
 
   async training(){
       this.fixLr = this.lr
@@ -103,16 +119,13 @@ class DatumController {
       let a, b, c = null // a = kelas A, b = kelas B, c = Kelas C
       let data = await training.all()
       data = data.toJSON()
+     
+      this.minMax(data)
+     
       data = this.normalization(data)
-      // console.log('epoch', this.epoch)
-      // console.log('Alpha', this.lr)
-      // console.log('decAlpha',this.decLr)
-      // console.log('eps', this.episilon)
+      
       for (let i = 0; i < epoh && this.lr >= this.episilon ; i++) {
-         // console.log('epoch', this.epoch)
-      console.log('Alpha', this.lr)
-        // console.log('decAlpha',this.decLr)
-      console.log('eps', this.episilon)  
+     
         data.forEach(item => {      
               a = this.euclidean(this.wA, item)
               b = this.euclidean(this.wB, item)
@@ -169,6 +182,8 @@ class DatumController {
 
           // seleksi kelas pemenang
           let minimum = Math.min(...[a, b, c])
+          
+          //cek prediksi kelas pemenang
           let resultTarget = null
           if (a === minimum) {
             resultTarget = 'A'
@@ -177,21 +192,52 @@ class DatumController {
           } else if (c === minimum) {
             resultTarget = 'C'
           }
-
+          //simpan hasil kelas pemenang
           item.resultTarget = resultTarget
-          
-          if (item.target === resultTarget) {
-            item.status = 'True'
-            this.countTrue++;
-          } else {
-            this.countFalse++;
-            item.status = 'False'
+
+          //pengecekan kelas pemenang dengan kelas real
+          if(resultTarget === 'A'){
+            if (item.target === resultTarget ) {
+              this.Paa++
+              item.status = 'True'
+            }else if(item.target === 'B'){
+              this.Pab++;
+              item.status = 'False'
+            } else {
+              this.Pac++;
+              item.status = 'False'
+            }
+          }else if(resultTarget === 'B'){
+            if (item.target === resultTarget ) {
+              this.Pbb++
+              item.status = 'True'
+            }else if(item.target === 'C'){
+              this.Pbc++;
+              item.status = 'False'
+            } else {
+              this.Pba++;
+              item.status = 'False'
+            }
+          }else{
+            if (item.target === resultTarget ) {
+              this.Pcc++
+              item.status = 'True'
+            }else if(item.target === 'A'){
+              this.Pca++;
+              item.status = 'False'
+            } else {
+              this.Pcb++;
+              item.status = 'False'
+            }
           }
+          
           this.dataTested.push(item)
         })
-        this.countAll = data.length
-        this.accuration = Math.round((this.countTrue / data.length) * 100)
-        console.log("Akurasi: "+this.accuration)
+        this.countAll = this.Paa+this.Pab+this.Pac+this.Pbb+this.Pba+this.Pbc+this.Pcc+this.Pca+this.Pcb
+        this.countTrue = this.Paa+this.Pbb+this.Pcc
+        this.countFalse = +this.Pab+this.Pac+this.Pba+this.Pbc+this.Pca+this.Pcb
+        this.accuration = Math.round(((this.countTrue) / (this.countAll)) * 100)
+        // console.log("Akurasi: "+this.accuration)
   }
 
   match(weight, item) {
@@ -244,12 +290,20 @@ class DatumController {
   }
 
   normalization(data){
+    data.forEach(element => {
+        element.mufrodat = ((element.mufrodat - this.minMufrodat)/(this.maxMufrodat - this.minMufrodat)).toFixed(3)
+        element.tarakib = ( (element.tarakib - this.minTarakib) / (this.maxTarakib - this.minTarakib)).toFixed(3)
+        element.qiroah = ( (element.qiroah - this.minQiroah) / (this.maxQiroah - this.minQiroah)).toFixed(3)
+        element.kitabah = ( (element.kitabah - this.minKitabah) / (this.maxKitabah - this.minKitabah)).toFixed(3)
+    });
+    return data
+  }
 
+  async minMax(data){
     let mufrodat = []
     let tarakib = []
     let qiroah = []
     let kitabah = []
-
     let temp = data
 
     temp.forEach(element => {
@@ -259,28 +313,14 @@ class DatumController {
         kitabah.push(element.kitabah)
     });
 
-    let minMufrodat = Math.min.apply(null,mufrodat)
-    let maxMufrodat = Math.max.apply(null,mufrodat)
-    let minTarakib = Math.min.apply(null,tarakib)
-    let maxTarakib = Math.max.apply(null,tarakib)
-    let minQiroah = Math.min.apply(null,qiroah)
-    let maxQiroah = Math.max.apply(null,qiroah)
-    let minKitabah = Math.min.apply(null,kitabah)
-    let maxKitabah = Math.max.apply(null,kitabah)
-
-    data.forEach(element => {
-     
-        // element.mufrodat = Math.round((element.mufrodat - minMufrodat)/(maxMufrodat - minMufrodat))
-        // element.tarakib =  Math.round((element.tarakib - minTarakib) / (maxTarakib - minTarakib))
-        // element.qiroah =  Math.round((element.qiroah - minQiroah) / (maxQiroah - minQiroah))
-        // element.kitabah =  Math.round((element.kitabah - minKitabah) / (maxKitabah - minKitabah))
-
-        element.mufrodat = (element.mufrodat - minMufrodat)/(maxMufrodat - minMufrodat)
-        element.tarakib =  (element.tarakib - minTarakib) / (maxTarakib - minTarakib)
-        element.qiroah =  (element.qiroah - minQiroah) / (maxQiroah - minQiroah)
-        element.kitabah =  (element.kitabah - minKitabah) / (maxKitabah - minKitabah)
-    });
-    return data
+    this.minMufrodat = Math.min.apply(null,mufrodat)
+    this.maxMufrodat = Math.max.apply(null,mufrodat)
+    this.minTarakib = Math.min.apply(null,tarakib)
+    this.maxTarakib = Math.max.apply(null,tarakib)
+    this.minQiroah = Math.min.apply(null,qiroah)
+    this.maxQiroah = Math.max.apply(null,qiroah)
+    this.minKitabah = Math.min.apply(null,kitabah)
+    this.maxKitabah = Math.max.apply(null,kitabah)
   }
 
   reset() {

@@ -104,16 +104,30 @@
               </thead>
               <tbody class="text-center">
                 @each(item in data)
-                    <tr>
-                        <td>{{$loop.index+1}}</td>
-                        <td>{{item.mufrodat}}</>
-                        <td>{{item.tarakib}}</>
-                        <td>{{item.qiroah}}</>
-                        <td>{{item.kitabah}}</>
-                        <td>{{"Kelas "+item.target}}</td>
-                        <td>{{"Kelas "+item.resultTarget}}</td>
-                        <td>{{item.status}}</td>  
-                    </tr>
+                   @if(item.status == 'True')
+                   <tr>
+                      <td>{{$loop.index+1}}</td>
+                      <td>{{item.mufrodat}}</>
+                      <td>{{item.tarakib}}</>
+                      <td>{{item.qiroah}}</>
+                      <td>{{item.kitabah}}</>
+                      <td>{{"Kelas "+item.target}}</td>
+                      <td>{{"Kelas "+item.resultTarget}}</td>
+                      <td>{{item.status}}</td>  
+                  </tr>
+                     
+                   @else
+                   <tr class="text-danger">
+                      <td>{{$loop.index+1}}</td>
+                      <td>{{item.mufrodat}}</>
+                      <td>{{item.tarakib}}</>
+                      <td>{{item.qiroah}}</>
+                      <td>{{item.kitabah}}</>
+                      <td>{{"Kelas "+item.target}}</td>
+                      <td>{{"Kelas "+item.resultTarget}}</td>
+                      <td>{{item.status}}</td>  
+                  </tr>
+                   @endif
                 @endeach
               </tbody>
             </table>
