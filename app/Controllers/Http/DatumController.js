@@ -59,6 +59,12 @@ class DatumController {
     return view.render('home')
   }
 
+  async importData({request}){
+    const key = request.input('ratio')
+    await Database.truncate("data");
+    await ImportService.ImportDataTesting()
+  }
+
 
   async classification({ request, view }) {
     this.epoch = request.input('epoch')
