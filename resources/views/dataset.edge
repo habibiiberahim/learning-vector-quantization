@@ -6,37 +6,10 @@
 
 @yield('content')
 <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <form action="{{ route('data.import')}}" method="get">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div class="form-group">
-                                <select class="form-control" name="ratio" id="">
-                                    <option selected disabled >Ratio Data Training : Testing</>
-                                    <option value="1">60 : 40 </option>
-                                    <option value="2">70 : 30 </option>
-                                    <option value="3">80 : 20 </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">  
-                                <button type="submit" class=" form-control">Import</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-<div class="col-md-6">
+<div class="col-md-12">
     <div class="card " >
         <div class="card-header">
-        <h4 class="card-title text-center"> Data Training</h4>
+        <h4 class="card-title text-center"> Dataset</h4>
         </div>
         <div class="card-body">
         <div class="table">
@@ -51,7 +24,7 @@
                 {{--  <th>Status</th>  --}}
             </thead>
             <tbody class="text-center">
-                @each(item in dataTraining)         
+                @each(item in dataset)         
                 <tr>
                     <td>{{$loop.index+1}}</td>
                     <td>{{item.mufrodat}}</>
@@ -66,40 +39,5 @@
         </div>
         </div>
     </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card " >
-        <div class="card-header">
-            <h4 class="card-title text-center"> Data Testing</h4>
-        </div>
-        <div class="card-body">
-            <div class="table">
-            <table class="table">
-                <thead class="text-center">
-                <th>No.</th>
-                <th>Mufrodat</th>
-                <th>Tarakib</th>
-                <th>Qiro'ah</th>
-                <th>Kitabah</th>
-                <th>Target</th>
-                {{--  <th>Status</th>  --}}
-                </thead>
-                <tbody class="text-center">
-                @each(item in dataTesting)         
-                    <tr>
-                    <td>{{$loop.index+1}}</td>
-                    <td>{{item.mufrodat}}</>
-                    <td>{{item.tarakib}}</>
-                    <td>{{item.qiroah}}</>
-                    <td>{{item.kitabah}}</>
-                    <td>{{"Kelas "+item.target}}</>  
-                    </tr>
-                @endeach
-                </tbody>
-            </table>
-            </div>
-        </div>
-        </div>
-    </div>
-</div>
+    
 @endyield
