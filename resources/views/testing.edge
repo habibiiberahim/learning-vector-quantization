@@ -1,0 +1,56 @@
+@layout('layout.master')
+
+@yield('title')
+  Home
+@endyield
+
+@yield('content')
+<div class="col-md-12">
+    <div class="card card-user">
+        <div class="card-header">
+            <h5 class="card-title">Learning Vector Quantization</h5>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('data.single')}}" >
+           <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Mufrodat</label>
+                    <input name="mufrodat" type="number" class="form-control" placeholder="Jumlah soal yang dijawab benar (0 - 50) " step="1" min="0" max="50">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Tarakib</label>
+                    <input name="tarakib" type="number" class="form-control" placeholder="Jumlah soal yang dijawab benar (0 - 20) " step="1" min="0" max="20">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Qiroah</label>
+                    <input name="qiroah" type="number" class="form-control" placeholder="Jumlah soal yang dijawab benar (0 - 20) " step="1" min="0" max="20">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                    <label>Kitabah</label>
+                    <input name="kitabah" type="number" class="form-control" placeholder="Jumlah soal yang dijawab benar (0 - 10) " step="1" min="0" max="10">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="update ml-auto mr-auto">
+                    <button type="submit" class="btn btn-primary btn-round">Submit</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endyield

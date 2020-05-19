@@ -1,0 +1,46 @@
+@layout('layout.master')
+
+@yield('title')
+  Classification
+@endyield
+
+@yield('content')
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card" >
+        <div class="card-header">
+          <h4 class="card-title text-center">Classification</h4>
+        </div>
+        <div class="card-body">
+          <div class="table">
+            <table class="table">
+              <thead class="text-center">
+                <th>No.</th>
+                <th>Mufrodat</th>
+                <th>Tarakib</th>
+                <th>Qiro'ah</th>
+                <th>Kitabah</th>
+                <th>Result</th>
+              </thead>
+              <tbody class="text-center">
+                @each(item in data)
+                   <tr>
+                      <td>{{$loop.index+1}}</td>
+                      <td>{{item.mufrodat}}</>
+                      <td>{{item.tarakib}}</>
+                      <td>{{item.qiroah}}</>
+                      <td>{{item.kitabah}}</>
+                      <td>{{"Kelas "+item.resultTarget}}</td>
+                  </tr>
+                @endeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+@endyield

@@ -18,6 +18,8 @@ const Route = use('Route')
 
 
 Route.get('/', 'DatumController.index').as('data.index')
+Route.get('/test', 'DatumController.test').as('data.test')
+Route.get('single', 'DatumController.single').as('data.single')
 Route.get('classification', 'DatumController.classification').as('data.classification')
 Route.get('dataset', 'DatumController.dataset').as('data.set')
 Route.get('import', 'DatumController.importData').as('data.import')
