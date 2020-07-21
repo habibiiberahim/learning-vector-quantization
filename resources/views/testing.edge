@@ -6,12 +6,21 @@
 
 @yield('content')
 <div class="col-md-12">
+   
+        
     <div class="card card-user">
         <div class="card-header">
-            <h5 class="card-title">Learning Vector Quantization</h5>
+            <h5 class="card-title">Klasifikasi Kelas PKPBA Berdasarkan Nilai Placement Test</h5>
         </div>
         <div class="card-body">
             <form action="{{ route('data.single')}}" >
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <p class="">Sistem ini melakukan klasifikasi berdasarkan jumlah soal yang dijawab benar pada setiap sesi placement test, dimana pada test tersebut terbagi menjadi 4 bagian soal. Pengguna hanya perlu memasukan jumlah soal yang benar pada setiap bagian kemudian sistem akan memprediksi kelas yang akan didapatkan. </p>
+                    </div>
+                </div>
+            </div>
            <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">

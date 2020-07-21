@@ -30,14 +30,15 @@ class DatumController {
       qiroah: 0.5,
       kitabah: 0.333,
     }),
-      //
-      (this.fixLr = 0);
+    
+    //parameter training
+    (this.fixLr = 0);
     this.epoch = 1000;
     this.decLr = 0.1;
     this.lr = 0.001;
     this.episilon = 0.00001;
 
-    //
+    //variabel pendukung
     this.wResult = {};
     this.dataTested = [];
     this.dataTraining = [];
@@ -46,7 +47,6 @@ class DatumController {
     this.countFalse = 0;
     this.countAll = 0;
     this.accuration = 0;
-
     this.ratio = 0;
 
     //confusion matrix variable
@@ -109,10 +109,7 @@ class DatumController {
 
   async classification({ request, view }) {
     // await this.importData()
-    // this.epoch = request.input('epoch')
-    // this.lr = request.input('alpha')
-    // this.decLr = request.input('decAlpha')
-    // this.episilon = request.input('episilon')
+    
     const key = request.input("ratio");
 
     if (key == 1) {
@@ -122,11 +119,12 @@ class DatumController {
     } else {
       await this.getData(80);
     }
-    // console.log(this.lr, this.epoch, this.ratio, this.decLr)
+   
 
     await this.training(this.dataTraining);
     await this.testing(this.dataTesting);
 
+    
     return view.render("result", {
       data: this.dataTested,
       accuration: this.accuration,
@@ -240,7 +238,7 @@ class DatumController {
 
   async testing(data) {
     data.forEach((item) => {
-      console.log(item)
+      // console.log(item)
       let a,
         b,
         c = 0;
@@ -452,7 +450,7 @@ class DatumController {
           item.status = "True";
         }
       }
-      console.log(item)
+      // console.log(item)
       this.dataTested.push(item);
     
     this.countAll =
